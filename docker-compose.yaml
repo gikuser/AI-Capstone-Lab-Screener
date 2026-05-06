@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  agent-api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - ./checkpoint_db.sqlite:/app/checkpoint_db.sqlite
+      - ./faiss_index:/app/faiss_index
+    restart: always

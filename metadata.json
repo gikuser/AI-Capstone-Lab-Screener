@@ -1,0 +1,6 @@
+{
+  "name": "AI Lab: Resume Screening System",
+  "description": "An agentic multi-agent system built with LangGraph and Gemini for automated resume screening and recruitment emails with HITL approval.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

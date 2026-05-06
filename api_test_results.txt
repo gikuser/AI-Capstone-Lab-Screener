@@ -1,0 +1,20 @@
+# API Test Results - Lab 8 (Manual Audit via CURL)
+
+1. Health Check
+GET /docs: 200 OK
+
+2. Chat Endpoint (/chat)
+Request: {"message": "What is the policy for Senior roles?", "thread_id": "test-456"}
+Response: 200 OK. Content: "Senior Level: 5+ years of experience. Must have system layout and architectural design experience..."
+Status: SUCCESS
+
+3. Streaming Endpoint (/stream)
+Request: {"message": "Evaluate this candidate...", "thread_id": "test-789"}
+Response: 200 OK. SSE Stream verified.
+Nodes detected: research -> tools -> research -> analysis -> send_email.
+Status: SUCCESS
+
+4. Persistence Check
+Request: Repeat /chat with same thread_id.
+Observation: Context preserved. Thread recall successful.
+Status: SUCCESS

@@ -1,0 +1,23 @@
+# GlobalTech Corporate Hiring Guidelines & Policies
+
+## 1. General Qualifications
+- All engineering roles require at least a Bachelor's degree in Computer Science, Software Engineering, or a related field. Equivalent industry experience (minimum 4 years) can be substituted for a degree.
+- Candidates must demonstrate strong communication skills, problem-solving abilities, and a willingness to work collaboratively in a fast-paced environment.
+
+## 2. Core Technical Skills for AI/ML Roles
+- **Programming Languages:** Proficiency in Python is mandatory. Experience with C++, Java, or Go is a strong plus.
+- **Frameworks:** Candidates should have hands-on experience with modern AI frameworks such as PyTorch, TensorFlow, or LangChain depending on the specific role.
+- **Data Engineering:** Basic SQL proficiency and understanding of data pipelines (ETL) is expected for all ML engineer candidates.
+
+## 3. Experience Levels
+- **Junior / Entry Level:** 0-2 years of experience. Must have completed relevant internships or comprehensive capstone projects.
+- **Mid-Level:** 3-5 years of industry experience. Must demonstrate ownership of at least one major feature or subsystem in past roles.
+- **Senior Level:** 5+ years of experience. Must have system layout and architectural design experience. Experience mentoring junior engineers is required.
+
+## 4. Diversity, Equity, and Inclusion (DEI) Policy
+- We are committed to an inclusive hiring process. No candidate should be penalized for non-traditional educational backgrounds if they possess the required skills.
+- Focus on evaluating skills and demonstrable projects rather than prestige of previous employers.
+
+## 5. Security & Best Practices
+- Familiarity with secure coding practices, version control (Git), and CI/CD pipelines is required for all software positions.
+- Cloud experience (AWS, GCP, or Azure) is mandatory for any backend or MLops role.

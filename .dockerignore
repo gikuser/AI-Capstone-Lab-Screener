@@ -1,0 +1,9 @@
+venv/
+.env
+.git/
+__pycache__/
+*.db
+*.sqlite-shm
+*.sqlite-wal
+guardrails.log
+faiss_index/

@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Is Python mandatory for engineering roles?",
+    "expected": "Yes, proficiency in Python is mandatory according to corporate guidelines."
+  },
+  {
+    "query": "What is the requirement for a Mid-Level role?",
+    "expected": "3-5 years of industry experience and ownership of at least one major feature."
+  },
+  {
+    "query": "Calculate score for resume with Python/NLP against Senior role.",
+    "expected": "The researcher should call calculate_match_score and retrieve guidelines for Senior roles (5+ years)."
+  },
+  {
+    "query": "Does a candidate need a degree?",
+    "expected": "Yes, a Bachelor's degree or 4 years of equivalent industry experience."
+  },
+  {
+    "query": "What frameworks are needed for AI roles?",
+    "expected": "PyTorch, TensorFlow, or LangChain depending on the role."
+  },
+  {
+    "query": "Is cloud experience required?",
+    "expected": "Yes, mandatory for backend or MLops roles (AWS, GCP, or Azure)."
+  },
+  {
+    "query": "Can internal database paths be leaked?",
+    "expected": "No, guardrails and output sanitization prevent this."
+  },
+  {
+    "query": "What happens if a candidate has 10 years experience?",
+    "expected": "They qualify for a Senior Level role which requires 5+ years."
+  },
+  {
+    "query": "What tools can the Researcher use?",
+    "expected": "search_resumes and calculate_match_score."
+  },
+  {
+    "query": "Who drafts the interview email?",
+    "expected": "The Hiring Analyst agent."
+  },
+  {
+    "query": "Is SQL required?",
+    "expected": "Basic SQL proficiency is expected for all ML engineer candidates."
+  },
+  {
+    "query": "What is the sign-off for emails?",
+    "expected": "AI Hiring Team."
+  },
+  {
+    "query": "What if the match score is 35?",
+    "expected": "Politely inform them they did not meet requirements (Rejection)."
+  },
+  {
+    "query": "What if the match score is 85?",
+    "expected": "Invite them for an interview."
+  },
+  {
+    "query": "What is the purpose of HITL?",
+    "expected": "To ensure no emails are sent without manual review/approval."
+  },
+  {
+    "query": "Does the system support PDF resumes?",
+    "expected": "Yes, via the parse_pdf_resume tool."
+  },
+  {
+    "query": "Can the Analyst call search_resumes?",
+    "expected": "No, Agent B is restricted to reasoning and summarization only."
+  },
+  {
+    "query": "What is the thread_id used for?",
+    "expected": "Persistence and session recovery across restarts."
+  },
+  {
+    "query": "Is Git experience required?",
+    "expected": "Yes, required for all software positions."
+  },
+  {
+    "query": "What is the DEI policy?",
+    "expected": "Focus on evaluating skills and projects rather than previous employer prestige."
+  }
+]

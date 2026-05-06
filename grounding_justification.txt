@@ -1,0 +1,8 @@
+# Why the Agent Needs This Data
+
+The Resume Screening System specifically requires access to the **Private Corporate Hiring Guidelines** rather than relying on the LLM's pre-trained knowledge for several reasons:
+
+1. **Policy Adherence**: Every company has unique experience-to-education equivalency rules (e.g., 4 years = 1 degree) that a general model wouldn't know.
+2. **Current Tech Stack**: Guidelines define the *mandatory* frameworks (e.g., LangChain) specific to this company's current projects.
+3. **Legal & DEI Compliance**: The agent must follow specific corporate DEI policies that prioritize skills over prestige, ensuring unbiased screening.
+4. **Consistency**: RAG ensures every candidate is judged against the exact same text document, providing a "Source of Truth" that prevents hallucinated requirements.

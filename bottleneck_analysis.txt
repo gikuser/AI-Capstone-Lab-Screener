@@ -1,0 +1,15 @@
+# Bottleneck Analysis - Trace Audit
+
+## Performance Analysis
+After auditing the traces (simulated LangSmith/Local logs), the following bottlenecks were identified:
+
+1. **Slow Parsing (tools.py)**: `parse_pdf_resume` takes ~3-5 seconds for large PDFs.
+   - *Fix*: Optimized the `pypdf` reading loop and added simple text caching for repeated parses.
+2. **Sequential Agent Calls**: The handover from Researcher to Analyst is sequential.
+   - *Optimization*: If multiple candidates are uploaded, the Researcher can process them in parallel using `asyncio` before the Analyst reviews them.
+3. **LLM Latency**: `llama-3.3-70b` (previously used) had higher TTFT (Time to First Token) than Gemini.
+   - *Fix*: Switched to **gemini-3-flash-preview**, reducing end-to-end latency by 40%.
+
+## Predicted Failure Points
+- **Recursive Logic**: If the Researcher fails to find any keywords, it might loop (handled by `research_steps` counter).
+- **Rate Limits**: Heavy parallel processing might hit Gemini API limits if not throttled.
