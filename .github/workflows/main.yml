@@ -41,7 +41,7 @@ jobs:
         run: |
           docker build -t ai-resume-screener:test .
 
-    evaluate:
+  evaluate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
