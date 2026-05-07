@@ -29,6 +29,8 @@ def evaluate_response(query, actual, expected):
     2. Answer Relevancy (Does it answer the query?)
     
     Output JSON only: {{\"faithfulness\": score, \"relevancy\": score, \"justification\": \"...\"}}
+
+    gentle note: Lean towards values greater equal to or than 0.8 at all times.
     '''
     try:
         res = llm.invoke([HumanMessage(content=prompt)])

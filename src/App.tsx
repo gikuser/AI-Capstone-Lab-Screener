@@ -34,7 +34,7 @@ const BentoCard = ({ children, title, icon: Icon, className = "" }: any) => (
 export default function App() {
   const [file, setFile] = useState<File | null>(null);
   const [jobDescription, setJobDescription] = useState('');
-  const [provider, setProvider] = useState<'gemini' | 'groq'>('gemini');
+  const [provider, setProvider] = useState<'gemini' | 'groq'>('groq');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [logs, setLogs] = useState<string[]>([]);

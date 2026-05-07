@@ -59,7 +59,7 @@ export const calculateMatchScore = tool(
 
 // --- Models ---
 const getModel = (config: any, withTools = false) => {
-  const provider = config?.configurable?.provider || "gemini";
+  const provider = config?.configurable?.provider || "groq";
   
   if (provider === "groq") {
     const apiKey = process.env.GROQ_API_KEY;

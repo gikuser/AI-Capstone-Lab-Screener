@@ -1,13 +1,14 @@
-version: '3.8'
-
 services:
-  agent-api:
-    build: .
+  agentic-screener:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ai-resume-screener:latest
+    container_name: ai-resume-screener
     ports:
       - "3000:3000"
     environment:
+      - NODE_ENV=production
+      - GROQ_API_KEY=${GROQ_API_KEY}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
-    volumes:
-      - ./checkpoint_db.sqlite:/app/checkpoint_db.sqlite
-      - ./faiss_index:/app/faiss_index
-    restart: always
+    restart: unless-stopped
