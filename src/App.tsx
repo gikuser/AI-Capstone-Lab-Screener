@@ -9,7 +9,9 @@ import {
   RefreshCw,
   Mail,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  ThumbsUp,
+  ThumbsDown
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -38,6 +40,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [logs, setLogs] = useState<string[]>([]);
+  const [feedbackGiven, setFeedbackGiven] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const addLog = (msg: string) => {
@@ -81,6 +84,7 @@ export default function App() {
       }
 
       setResult(data);
+      setFeedbackGiven(false);
       addLog("Researcher: Analysis Complete. Data yielded to Analyst.");
       addLog("Analyst: Recommendation and Email draft ready.");
     } catch (error: any) {
@@ -88,6 +92,26 @@ export default function App() {
       addLog(`Error: ${error.message || "Agent communication interrupted."}`);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFeedback = async (type: 'good' | 'bad') => {
+    if (!result) return;
+    
+    try {
+      await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_input: jobDescription,
+          agent_response: JSON.stringify(result),
+          feedback: type
+        }),
+      });
+      setFeedbackGiven(true);
+      addLog(`System: Feedback recorded (${type.toUpperCase()}).`);
+    } catch (error) {
+      console.error("Feedback failed:", error);
     }
   };
 
@@ -231,6 +255,31 @@ export default function App() {
                 <p className="text-slate-300 text-[11px] leading-relaxed italic">
                   Matched core technical signals. Match logic suggests potential candidate fit. Recommendations finalized for human review.
                 </p>
+                
+                {/* Feedback Section */}
+                <div className="mt-4 pt-4 border-t border-slate-700 flex items-center justify-between">
+                  <span className="text-[9px] font-bold text-slate-500 uppercase">Rate system response:</span>
+                  <div className="flex gap-2">
+                    {feedbackGiven ? (
+                      <span className="text-[9px] font-bold text-green-500 uppercase animate-pulse">Feedback Received!</span>
+                    ) : (
+                      <>
+                        <button 
+                          onClick={() => handleFeedback('good')}
+                          className="p-1.5 hover:bg-slate-700 rounded-lg transition-colors group"
+                        >
+                          <ThumbsUp className="w-3 h-3 text-slate-500 group-hover:text-green-500" />
+                        </button>
+                        <button 
+                          onClick={() => handleFeedback('bad')}
+                          className="p-1.5 hover:bg-slate-700 rounded-lg transition-colors group"
+                        >
+                          <ThumbsDown className="w-3 h-3 text-slate-500 group-hover:text-red-500" />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
               </motion.div>
             )}
           </BentoCard>

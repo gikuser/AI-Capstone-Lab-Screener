@@ -32,24 +32,54 @@ export const AgentAnnotation = Annotation.Root({
 
 export const calculateMatchScore = tool(
   async ({ resume_text, job_description }) => {
-    const resumeKw = resume_text.toLowerCase().split(/\W+/);
-    const jobKw = job_description.toLowerCase().split(/\W+/).filter(w => w.length > 3);
-    
-    const matched = jobKw.filter(w => resumeKw.includes(w));
-    const missing = jobKw.filter(w => !resumeKw.includes(w));
-    
-    const score = jobKw.length > 0 ? Math.round((matched.length / jobKw.length) * 100) : 0;
-    
-    return JSON.stringify({
-      score,
-      matched_skills: matched.slice(0, 10),
-      missing_skills: missing.slice(0, 10),
-      verdict: score >= 70 ? "Strong Match" : score >= 40 ? "Partial Match" : "Weak Match"
-    });
+    const apiKey = process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+    if (!apiKey) {
+      return JSON.stringify({ error: "Missing API Key for semantic scoring." });
+    }
+
+    try {
+      // Use a fast model for semantic evaluation
+      const model = process.env.GROQ_API_KEY 
+        ? new ChatGroq({ model: "llama-3.3-70b-versatile", apiKey: process.env.GROQ_API_KEY, temperature: 0 })
+        : new ChatGoogleGenerativeAI({ model: "gemini-1.5-flash", apiKey: apiKey, temperature: 0 });
+
+      const prompt = `Evaluate the following Resume against the Job Description. 
+      Provide a match score (0-100) based on semantic fit, experience level, and skill relevance.
+      Do NOT just match keywords; look for transferable skills and relevant experience.
+      
+      Resume:
+      ${resume_text.slice(0, 4000)}
+      
+      Job Description:
+      ${job_description.slice(0, 2000)}
+      
+      Return ONLY a JSON object with the following keys:
+      - score: number (0-100)
+      - reasons: string[] (top 3 reasons for the score)
+      - strengths: string[]
+      - gaps: string[]
+      - verdict: string (S-Tier, Qualified, Borderline, or Reject)`;
+
+      const response = await model.invoke([new HumanMessage(prompt)]);
+      const content = response.content as string;
+      
+      // Attempt to extract JSON if the model added markdown blocks
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      const result = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(content);
+      
+      return JSON.stringify(result);
+    } catch (err: any) {
+      return JSON.stringify({ 
+        error: "Semantic evaluation failed", 
+        details: err.message,
+        score: 50, // Default fallback
+        reasons: ["Evaluation service temporary error"]
+      });
+    }
   },
   {
     name: "calculate_match_score",
-    description: "Analyzes a resume against a job description to calculate a match score.",
+    description: "Performs a semantic evaluation of a resume against a job description using an LLM.",
     schema: z.object({
       resume_text: z.string(),
       job_description: z.string(),
@@ -105,7 +135,8 @@ const researchAgent = async (state: typeof AgentAnnotation.State, config?: any) 
   const systemMsg = new SystemMessage(`You are a technical Researcher. 
   1. ALWAYS call calculate_match_score with the PROVIDED Candidate Resume and Job Requirements.
   2. You MUST use the exact text from the state messages.
-  3. Once you have the tech score, summarize the findings and set researchDone to true by stopping tool calls.`);
+  3. The tool will provide a SEMANTIC score and detailed REASONS. 
+  4. Summarize these findings for the Analyst, specifically highlighting the reasons provided by the tool.`);
 
   const modelWithTools = getModel(config, true);
   const response = await modelWithTools.invoke([systemMsg, ...state.messages]);
@@ -123,9 +154,9 @@ const researchAgent = async (state: typeof AgentAnnotation.State, config?: any) 
 const analysisAgent = async (state: typeof AgentAnnotation.State, config?: any) => {
   console.log(`Agent: Analysis Agent acting with [${config?.configurable?.provider || 'default'}]...`);
   const systemMsg = new SystemMessage(`You are a senior Hiring Analyst. 
-  Review the research and write a professional email to the candidate.
-  - Score >= 40: Interview invite.
-  - Score < 40: Rejection.
+  Review the research (score, reasons, strengths, gaps) and write a professional email to the candidate.
+  - S-Tier/Qualified: Interview invite, mention their specific strengths.
+  - Borderline/Reject: Polite rejection, mentioning some of the gaps or missing alignment based on the research.
   Sign off as 'AI Hiring Team'.`);
 
   const model = getModel(config, false);

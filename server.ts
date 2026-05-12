@@ -7,6 +7,8 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import multer from "multer";
+import fs from "fs/promises";
+import { existsSync } from "fs";
 import { app as graphApp } from "./src/lib/agents";
 import { HumanMessage } from "@langchain/core/messages";
 
@@ -23,16 +25,16 @@ async function startServer() {
     next();
   });
 
-  // Check for API Key early
-  if (!process.env.GEMINI_API_KEY) {
-    console.warn("WARNING: GEMINI_API_KEY is not set. The agent features will fail.");
+  // Check for API Keys early
+  if (!process.env.GROQ_API_KEY && !process.env.GEMINI_API_KEY) {
+    console.warn("WARNING: No AI API keys (GROQ_API_KEY or GEMINI_API_KEY) are set. The agent features will fail.");
   }
 
   // API Routes
   app.post("/api/screen", upload.single('resume'), async (req: any, res) => {
     console.log("API: /api/screen called");
     try {
-      const { job_description, provider = "gemini" } = req.body;
+      const { job_description, provider = "groq" } = req.body;
       const file = req.file;
 
       if (!file || !job_description) {
@@ -91,6 +93,39 @@ async function startServer() {
     } catch (error: any) {
       console.error("Server Error:", error);
       res.status(500).json({ error: error.message || "Agent execution failed" });
+    }
+  });
+
+  app.post("/api/feedback", async (req, res) => {
+    try {
+      const { user_input, agent_response, feedback } = req.body;
+      const logEntry = {
+        timestamp: new Date().toISOString(),
+        user_input,
+        agent_response,
+        feedback
+      };
+
+      const logPath = path.join(process.cwd(), 'feedback_log.json');
+      let logs = [];
+      
+      if (existsSync(logPath)) {
+        const fileContent = await fs.readFile(logPath, 'utf8');
+        try {
+          logs = JSON.parse(fileContent);
+        } catch (e) {
+          logs = [];
+        }
+      }
+      
+      logs.push(logEntry);
+      await fs.writeFile(logPath, JSON.stringify(logs, null, 2));
+      
+      console.log(`System: Feedback recorded for "${user_input.slice(0, 30)}..."`);
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Feedback Error:", error);
+      res.status(500).json({ error: "Failed to save feedback" });
     }
   });
 

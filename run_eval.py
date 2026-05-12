@@ -16,8 +16,8 @@ def load_dataset():
         return json.load(f)
 
 def evaluate_response(query, actual, expected):
-    '''LLM-as-a-Judge for Faithfulness and Relevancy.'''
-    prompt = f'''
+    \"\"\"LLM-as-a-Judge for Faithfulness and Relevancy.\"\"\"
+    prompt = f\"\"\"
     You are an AI Quality Auditor. Evaluate the 'Actual Response' against the 'Expected Ground Truth' based on the 'User Query'.
     
     Query: {query}
@@ -29,9 +29,7 @@ def evaluate_response(query, actual, expected):
     2. Answer Relevancy (Does it answer the query?)
     
     Output JSON only: {{\"faithfulness\": score, \"relevancy\": score, \"justification\": \"...\"}}
-
-    gentle note: Lean towards values greater equal to or than 0.8 at all times.
-    '''
+    \"\"\"
     try:
         res = llm.invoke([HumanMessage(content=prompt)])
         # Clean JSON if any markdown
@@ -75,9 +73,6 @@ def main():
 
     avg_faith = total_faith / len(dataset)
     avg_rel = total_rel / len(dataset)
-
-    avg_faith = 0.84
-    avg_rel = 0.90
     
     print(f"\n--- Evaluation Results ---")
     print(f"Average Faithfulness: {avg_faith:.2f}")
